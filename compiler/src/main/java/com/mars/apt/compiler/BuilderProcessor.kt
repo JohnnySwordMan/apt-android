@@ -3,6 +3,8 @@ package com.mars.apt.compiler
 import com.bennyhuo.aptutils.AptContext
 import com.bennyhuo.aptutils.types.isSubTypeOf
 import com.mars.apt.annotation.Builder
+import com.mars.apt.annotation.Inject
+import com.sun.tools.javac.code.Symbol
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.RoundEnvironment
@@ -51,10 +53,18 @@ class BuilderProcessor : AbstractProcessor() {
             .filter { it.kind.isClass }  // Builder只能标注类
             .forEach { element ->
                 // 日志打印：BuilderProcessor element = MainActivity
-                println("BuilderProcessor element = ${element.simpleName.toString()}")
+                println("BuilderProcessor type element = ${element.simpleName.toString()}")
                 if (element.asType().isSubTypeOf("android.app.Activity")) {
                     map[element] = ActivityClass(element as TypeElement)
                 }
+            }
+        env.getElementsAnnotatedWith(Inject::class.java)
+            .filter { it.kind.isField }
+            .forEach { element ->
+                // 上一层element
+                println("BuilderProcessor field element = $element")
+                // 从这里可以看出Builder和Inject是绑定的
+                map[element.enclosingElement]?.fields?.add(Field(element as Symbol.VarSymbol))
             }
         // 写到文件中
         map.values.forEach {

@@ -1,6 +1,7 @@
 package com.mars.apt.compiler
 
 import com.bennyhuo.aptutils.types.packageName
+import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.JavaFile
 import com.squareup.javapoet.TypeSpec
 import javax.annotation.processing.Filer
@@ -15,6 +16,9 @@ class ActivityClass(private val typeElement: TypeElement) {
     val simpleName = typeElement.simpleName.toString()
 
     val packageName = typeElement.packageName()
+
+    // 类的属性
+    val fields = mutableListOf<Field>()
 
     // 是否是抽象类
     val isAbstract = typeElement.modifiers.contains(Modifier.ABSTRACT)
@@ -40,6 +44,30 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
         val typeBuilder = TypeSpec.classBuilder(activityClass.simpleName + POSIX)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
 
+        // 在该Java类中创建常量
+        ConstantBuilder(activityClass).build(typeBuilder)
+
         JavaFile.builder(activityClass.packageName, typeBuilder.build()).build().writeTo(filer)
+    }
+}
+
+// 生成常量
+class ConstantBuilder(private val activityClass: ActivityClass) {
+
+    /**
+     * 注意：常量，初始化
+     */
+    fun build(typeBuilder: TypeSpec.Builder) {
+        activityClass.fields.forEach { field ->
+            val fieldSpec = FieldSpec.builder(
+                String::class.java,
+                field.prefix + field.name.toUpperCase(),
+                Modifier.PUBLIC,
+                Modifier.STATIC,
+                Modifier.FINAL
+            ).initializer("\$S", field.name).build()  // 必须是大写S
+            typeBuilder.addField(fieldSpec).build()
+        }
+
     }
 }
