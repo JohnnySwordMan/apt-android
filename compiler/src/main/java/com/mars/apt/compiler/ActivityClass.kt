@@ -1,9 +1,8 @@
 package com.mars.apt.compiler
 
 import com.bennyhuo.aptutils.types.packageName
-import com.squareup.javapoet.FieldSpec
-import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.TypeSpec
+import com.squareup.javapoet.*
+import javafx.scene.control.ContextMenu
 import javax.annotation.processing.Filer
 import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
@@ -46,6 +45,7 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
 
         // 在该Java类中创建常量
         ConstantBuilder(activityClass).build(typeBuilder)
+        MethodBuilder(activityClass).build(typeBuilder)
 
         JavaFile.builder(activityClass.packageName, typeBuilder.build()).build().writeTo(filer)
     }
@@ -66,8 +66,26 @@ class ConstantBuilder(private val activityClass: ActivityClass) {
                 Modifier.STATIC,
                 Modifier.FINAL
             ).initializer("\$S", field.name).build()  // 必须是大写S
-            typeBuilder.addField(fieldSpec).build()
+            typeBuilder.addField(fieldSpec)
         }
 
+    }
+}
+
+class MethodBuilder(private val activityClass: ActivityClass) {
+
+    fun build(typeBuilder: TypeSpec.Builder) {
+        val methodBuilder = MethodSpec.methodBuilder("start")
+            .addModifiers(Modifier.PUBLIC)
+            .returns(TypeName.VOID)
+            .addParameter(CONTEXT.java, "context")  // 方法参数
+
+        val methodBuilder2 = MethodSpec.methodBuilder("start2")
+            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+            .returns(TypeName.VOID)
+            .addParameter(CONTEXT.java, "context")  // 方法参数
+        typeBuilder
+            .addMethod(methodBuilder.build())
+            .addMethod(methodBuilder2.build())
     }
 }
