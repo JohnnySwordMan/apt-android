@@ -1,6 +1,8 @@
 package com.mars.apt.android;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +17,23 @@ import com.mars.apt.annotation.Inject;
 public class LoginActivity extends AppCompatActivity {
 
     @Inject
-    int username;
+    String username;
     @Inject
-    int password;
+    String password;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        TextView mTvName = findViewById(R.id.tv_name);
+        TextView mTvPwd = findViewById(R.id.tv_pwd);
+
+        String username = getIntent().getStringExtra("username");
+        String password = getIntent().getStringExtra("password");
+
+        mTvName.setText(username);
+        mTvPwd.setText(password);
     }
 }
