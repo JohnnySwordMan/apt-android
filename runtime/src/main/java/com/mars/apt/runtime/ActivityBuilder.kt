@@ -14,19 +14,22 @@ object ActivityBuilder {
 
     private var mActivityLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-            Log.e("gy", "onActivityCreated")
-            // 反射调用LoginActivityBuilder中的inject方法
+            // 不是所有的Activity都有Builder，这里加上try-catch
+            try {
+                // 反射调用LoginActivityBuilder中的inject方法
+                val className = activity.componentName.className+"Builder"
+                val cls = Class.forName(className)
+                val mInjectMethod = cls.getDeclaredMethod("inject", Activity::class.java, Bundle::class.java)
+                mInjectMethod.invoke(null, activity, savedInstanceState)
+            } catch (e: Exception) {
 
-            // 测试代码---start
-            val cls = Class.forName("com.mars.apt.android.LoginActivityBuilder")
-            cls.getDeclaredMethod("inject").invoke(null)
+            }
         }
 
         override fun onActivityStarted(activity: Activity) {
         }
 
         override fun onActivityResumed(activity: Activity) {
-            Log.e("gy", "onActivityResumed")
         }
 
         override fun onActivityPaused(activity: Activity) {

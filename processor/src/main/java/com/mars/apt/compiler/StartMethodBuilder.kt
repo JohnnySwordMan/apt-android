@@ -12,7 +12,7 @@ import javax.lang.model.element.Modifier
 class StartMethodBuilder(private val activityClass: ActivityClass) {
 
     fun build(typeBuilder: TypeSpec.Builder) {
-        val methodBuilderTemp = MethodSpec.methodBuilder("startTemp")
+        val methodBuilderTemp = MethodSpec.methodBuilder("start")
             .addModifiers(Modifier.PUBLIC)
             .returns(TypeName.VOID)
             .addParameter(CONTEXT.java, "context")
@@ -21,16 +21,16 @@ class StartMethodBuilder(private val activityClass: ActivityClass) {
         typeBuilder
             .addMethod(methodBuilderTemp.build())
             .addMethod(createStartMethod().build())
-            .addMethod(createInjectMethod())
+//            .addMethod(createInjectMethod())
     }
 
-    private fun createInjectMethod(): MethodSpec {
-        val methodBuilder = MethodSpec.methodBuilder("inject")
-            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-            .returns(TypeName.VOID)
-            .addParameter(CONTEXT.java, "context")
-        return methodBuilder.build()
-    }
+//    private fun createInjectMethod(): MethodSpec {
+//        val methodBuilder = MethodSpec.methodBuilder("inject")
+//            .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+//            .returns(TypeName.VOID)
+//            .addParameter(CONTEXT.java, "context")
+//        return methodBuilder.build()
+//    }
 
     /**
      * public static void start(Context context, String username, String password) {

@@ -9,6 +9,8 @@ import javax.lang.model.type.TypeMirror
 val CONTEXT = ClassType("android.content.Context")
 val INTENT = ClassType("android.content.Intent")
 val ACTIVITY_BUILDER = ClassType("com.mars.apt.runtime.ActivityBuilder")
+val ACTIVITY = ClassType("android.app.Activity")
+val BUNDLE = ClassType("android.os.Bundle")
 
 /**
  * className ---> TypeElement ---> TypeMirror

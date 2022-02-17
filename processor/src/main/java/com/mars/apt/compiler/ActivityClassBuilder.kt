@@ -25,6 +25,7 @@ class ActivityClassBuilder(private val activityClass: ActivityClass) {
         // 在该Java类中创建常量
         ConstantBuilder(activityClass).build(typeBuilder)
         StartMethodBuilder(activityClass).build(typeBuilder)
+        InjectMethodBuilder(activityClass).build(typeBuilder)
 
         JavaFile.builder(activityClass.packageName, typeBuilder.build()).build().writeTo(filer)
     }
